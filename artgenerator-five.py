@@ -47,20 +47,15 @@ for r in range(A,B):
     c = random.choice([*range(1,5)])
     d = random.choice([*range(1,5)])
     e = random.choice([*range(1,5)])
-    f = random.choice([*range(1,5)])
-    g = random.choice([*range(1,5)])
-    h = random.choice([*range(1,5)])
-    i = random.choice([*range(1,5)])
-    j = random.choice([*range(1,5)])
 
     # some images made more sense to above another layer depending on that image contents
     # so this section outputs a different order of images to use depending on the argument
 
     image_sequence = {
-            'a':a,'b':b,'c':c,'d':d,'e':e,'f':f,'g':g,'h':h,'i':i,'j':j,
+            'a':a,'b':b,'c':c,'d':d,'e':e,
     }
 
-    img_list = [a,b,c,d,e,f,g,h,i,j]
+    img_list = [a,b,c,d,e]
 
     base = ipl.open(input_path+f'a{a}.png') # load background image and combine the aplha image over top of it
     img_combine = {}
@@ -69,18 +64,10 @@ for r in range(A,B):
     check = 0
     #get the files
     for z in image_sequence.keys():
-        if z in ['a','b']:
-            value = image_sequence[z]
-            if value: # if values == 0 pass
-                img = ipl.open(input_path+z+f'{value}.png')
-                angle = random.choice([0,90,180,270])
-                img_combine[f'{z}{i}'] = pif.image_rotate(img,angle) # get the appropriate numbered image
-            i += 1
-        else:
-            value = image_sequence[z]
-            if value: # if values == 0 pass
-                img_combine[f'{z}{i}'] = ipl.open(input_path+z+f'{value}.png') # get the appropriate numbered image
-            i += 1
+        value = image_sequence[z]
+        if value: # if values == 0 pass
+            img_combine[f'{z}{i}'] = ipl.open(input_path+z+f'{value}.png') # get the appropriate numbered image
+        i += 1
 
 
     for img in img_combine:
@@ -90,10 +77,10 @@ for r in range(A,B):
     pif.image_save(base,'output',f'{collection_name}{r}') # save the image
     # all the numerical values will get stored in a temp .csv file if you want to track rarity in the collection
     # create checkpoint dataset
-    df = pd.DataFrame(img_catalogue,columns=['a','b','c','d','e','f','g','h','i','j',])
+    df = pd.DataFrame(img_catalogue,columns=['a','b','c','d','e'])
     df.to_csv(f'datasets/fallback_data.csv',index=False)
 
 # the final dataset will be saved if the loop above runs to completion
-collected = pd.DataFrame(img_catalogue,columns=['a','b','c','d','e','f','g','h','i','j',])
+collected = pd.DataFrame(img_catalogue,columns=['a','b','c','d','e'])
 print(collected)
 collected.to_csv(f'datasets/{collection_name}-collected-{A}-{B-1}.csv',index=False)

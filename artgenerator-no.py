@@ -69,18 +69,10 @@ for r in range(A,B):
     check = 0
     #get the files
     for z in image_sequence.keys():
-        if z in ['a','b']:
-            value = image_sequence[z]
-            if value: # if values == 0 pass
-                img = ipl.open(input_path+z+f'{value}.png')
-                angle = random.choice([0,90,180,270])
-                img_combine[f'{z}{i}'] = pif.image_rotate(img,angle) # get the appropriate numbered image
-            i += 1
-        else:
-            value = image_sequence[z]
-            if value: # if values == 0 pass
-                img_combine[f'{z}{i}'] = ipl.open(input_path+z+f'{value}.png') # get the appropriate numbered image
-            i += 1
+        value = image_sequence[z]
+        if value: # if values == 0 pass
+            img_combine[f'{z}{i}'] = ipl.open(input_path+z+f'{value}.png') # get the appropriate numbered image
+        i += 1
 
 
     for img in img_combine:
