@@ -18,6 +18,8 @@ IN WINDOWS you may need to use "py -m" at the beginning
 
 -py -m pip install --upgrade Pillow numpy pandas
 
+OR alternatively you can just double click the py file itself that you want to use.
+
 ### Artwork
 Once you have those installed, replace the art with your own. For now, to get a hang of it, leave the current naming convention.
 
