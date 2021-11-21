@@ -6,9 +6,17 @@ You will need to install python on your machine
 
 [download python](https://www.python.org/downloads/)
 
-And install the dependency Pillow
+FOR WINDOWS just use the executable
 
-[install Pillow](https://pillow.readthedocs.io/en/stable/installation.html)
+FOR linux based systems you should already have Python installed. I would assume Mac systems have it bundled too?
+
+And install the dependencies Pillow, numpy and pandas
+
+-pip install --upgrade Pillow numpy pandas
+
+IN WINDOWS you may need to use "py -m" at the beginning
+
+-py -m pip install --upgrade Pillow numpy pandas
 
 ### Artwork
 Once you have those installed, replace the art with your own. For now, to get a hang of it, leave the current naming convention.
