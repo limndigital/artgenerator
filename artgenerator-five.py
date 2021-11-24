@@ -83,4 +83,10 @@ for r in range(A,B):
 # the final dataset will be saved if the loop above runs to completion
 collected = pd.DataFrame(img_catalogue,columns=['a','b','c','d','e'])
 print(collected)
+
+if True in collected.duplicated().tolist():
+    print(collected.duplicated())
+else:
+    print('No duplicates')
+
 collected.to_csv(f'datasets/{collection_name}-collected-{A}-{B-1}.csv',index=False)
