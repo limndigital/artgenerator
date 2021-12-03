@@ -25,7 +25,7 @@ input_path = 'input/'
 # alter this section to include the filename of your generated art. Omitting the numbering and filetype.
 # so for example generated1.png would just be generated
 
-collection_name = 'generate'
+collection_name = 'generated'
 
 
 #********* SET SOME VARIABLES ***********
