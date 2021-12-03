@@ -21,7 +21,11 @@ import pil_image_functions as pif
 input_path = 'input/'
 
 # change this to your collection name - this will be outputted to the image file. I would advise against using spaces.
-collection_name = 'abstrktI'
+
+# alter this section to include the filename of your generated art. Omitting the numbering and filetype.
+# so for example generated1.png would just be generated
+
+collection_name = 'generate'
 
 
 #********* SET SOME VARIABLES ***********
@@ -69,13 +73,6 @@ for r in range(A,B):
 
     img_combine = {}
 
-    def composite_layer(letter,num):
-        img_combine[f'{num}'] = ipl.open(f'lines/{letter}{num}.png') # get the appropriate numbered image
-
-    linelist = [*range(1,22)]
-    random.shuffle(linelist)
-    linelist = linelist[:4]
-
     image_list = [*range(A,B)]
     random.shuffle(image_list)
     image_list.remove(r)
@@ -116,9 +113,6 @@ for r in range(A,B):
 
     new_img = new_img.convert('RGBA')
 
-    passes = random.choice([1,2,3,4])
-    for i in range(passes):
-        composite_layer(letter,linelist[i])
 
     for k in img_combine:
         new_img = pif.alpha_composite(img_combine[k],new_img) # apply the function to perform the merge of the two images
