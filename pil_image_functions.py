@@ -41,11 +41,94 @@ def image_channel(img,chk='r'):
         img_chn[:,:,0] = img_data[:,:,0]
     return ipl.fromarray(img_chn)
 
-def image_combine(img,img2):
+def image_colour_filter(img,channel='b',amount=0.5):
+    if channel == 'k':
+        return image_bw(img)
+    else:
+        r1, g1, b1 = img.convert('RGB').split()
+        r2, g2, b2 = img.convert('RGB').split()
+        col_dict = {'b' : ['abs(a - b)','abs(a - b)','abs(a + b)'],
+                    'c' : ['abs(a - b)','abs(a + b)','abs(a + b)'],
+                    'g' : ['abs(a - b)','abs(a + b)','abs(a - b)'],
+                    'm' : ['abs(a + b)','abs(a - b)','abs(a + b)'],
+                    'r' : ['abs(a + b)','abs(a - b)','abs(a - b)'],
+                    'y' : ['abs(a + b)','abs(a + b)','abs(a - b)'],}
+        r = ImageMath.eval(f"convert({col_dict.get(channel)[0]}, 'L')", a=r1, b=r2)
+        g = ImageMath.eval(f"convert({col_dict.get(channel)[1]}, 'L')", a=g1, b=g2)
+        b = ImageMath.eval(f"convert({col_dict.get(channel)[2]}, 'L')", a=b1, b=b2)
+        img = ipl.merge('RGB',(r1, g1, b1))
+        new_img = ipl.merge( 'RGB', (r, g, b))
+        return ipl.blend(img, new_img, amount)
+
+def image_combine(im1,im2):
+
+    r1, g1, b1 = im1.convert('RGB').split()
+    r2, g2, b2 = im2.convert('RGB').split()
+
+    r = ImageMath.eval("convert(min(a, b), 'L')", a=r1, b=r2)
+    g = ImageMath.eval("convert(min(a, b), 'L')", a=g1, b=g2)
+    b = ImageMath.eval("convert(min(a, b), 'L')", a=b1, b=b2)
+
+    return ipl.merge( 'RGB', (r, g, b))
+
+def image_combine_basic(img,img2):
     return ImageMath.eval("convert(min(a, b), 'L')", a=img, b=img2)
 
 def image_edges(img):
     return img.filter(ImageFilter.FIND_EDGES)
+
+def image_filter(im1,im2,mode='a',style='col',blend=1,amount=0.5):
+
+    # match the dimensions of the second image to the first image
+    im2 = image_dimension_match(im1,im2)
+
+    # split the channels from both images into new variables
+    r1, g1, b1 = im1.convert('RGB').split()
+    r2, g2, b2 = im2.convert('RGB').split()
+
+    im1 = ipl.merge('RGB',(r1, g1, b1))
+    im2 = ipl.merge('RGB',(r2, g2, b2))
+
+    # for neg2 both images are coverted to negative and blended for the output
+    if style == 'neg2':
+        im1 = image_negative(im1)
+        im2 = image_negative(im2)
+        if blend == 0: # for combined image
+            return im1
+        else: # for the blended images
+            return ipl.blend(im1, im2, amount)
+    else:
+        if style == 'neg': # negative for both images and combined with the first
+            mode = ''
+        # stored settings for different mixes
+        col_dict = {'acol' : ['min(a, b)','min(a, b)','max(a, b)'],
+                    'bcol' : ['abs(a - b)','abs(a - b)','abs(a + b)'],
+                    'ccol' : ['abs(a - b)','abs(a + b)','abs(a + b)'],
+                    'gcol' : ['abs(a - b)','abs(a + b)','abs(a - b)'],
+                    'mcol' : ['abs(a + b)','abs(a - b)','abs(a + b)'],
+                    'rcol' : ['abs(a + b)','abs(a - b)','abs(a - b)'],
+                    'ycol' : ['abs(a + b)','abs(a + b)','abs(a - b)'],
+                    'amix' : ['min(a, b)','min(a, b)','min(a, b)'],
+                    'bmix' : ['min(a, b)','max(a, b)','abs(a + b)'],
+                    'cmix' : ['max(a, b)','abs(a + b)','abs(a + b)'],
+                    'gmix' : ['max(a, b)','abs(a + b)','min(a, b)'],
+                    'mmix' : ['abs(a + b)','abs(a - b)','abs(a + b)'],
+                    'rmix' : ['abs(a + b)','min(a, b)','max(a, b)'],
+                    'ymix' : ['abs(a + b)','abs(a + b)','min(a, b)'],
+                    'neg' : ['abs(a - b)','abs(a - b)','abs(a - b)']}
+
+        r = ImageMath.eval(f"convert({col_dict.get(mode+style)[0]}, 'L')", a=r1, b=r2)
+        g = ImageMath.eval(f"convert({col_dict.get(mode+style)[1]}, 'L')", a=g1, b=g2)
+        b = ImageMath.eval(f"convert({col_dict.get(mode+style)[2]}, 'L')", a=b1, b=b2)
+
+        img = ipl.merge('RGB',(r1, g1, b1))
+        new_img = ipl.merge( 'RGB', (r, g, b))
+
+        # this section outputs the image - either blended between both images, or combined
+        if blend == 0: # for combined image
+            return new_img
+        else: # for the blended images
+            return ipl.blend(im1, new_img, amount)
 
 def image_flip(img):
     img_data = image_data(img)
